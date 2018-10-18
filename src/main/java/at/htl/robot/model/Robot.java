@@ -4,7 +4,7 @@ public class Robot {
 
     private int x = 0;
     private int y = 0;
-    private Direction direction = Direction.SOUTH;
+    Direction direction = Direction.SOUTH;
 
     //region Getter and Setter
     public int getX() {

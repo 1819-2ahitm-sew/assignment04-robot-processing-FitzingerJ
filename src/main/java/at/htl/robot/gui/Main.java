@@ -1,5 +1,7 @@
 package at.htl.robot.gui;
 
+import at.htl.robot.model.Direction;
+import at.htl.robot.model.Mode;
 import at.htl.robot.model.Robot;
 import processing.core.PApplet;
 
@@ -10,6 +12,11 @@ public class Main extends PApplet {
     int upperMargin = 20;
     int boxLength = 50;
     Robot robot;
+    private Mode mode = Mode.Teleport;
+    int count = 1;
+    char modeText = 'T';
+    int textX = 6;
+    int textY = 9;
     // Hier die Member-Attribute eintragen
 
     public static void main(String[] args) {
@@ -33,6 +40,7 @@ public class Main extends PApplet {
      */
     public void draw() {
         strokeWeight(3);
+        textSize(20);
 
         for (int i = 0; i < 11; i++) {
             line(
@@ -65,12 +73,42 @@ public class Main extends PApplet {
                     (int) (boxLength * 0.8),
                     (int) (boxLength * 0.8)
             );*/
+            fill(255, 255, 255);
             ellipse(
                     leftMargin - boxLength / 2 + robot.getX() * boxLength,
                     upperMargin - boxLength / 2 + robot.getY() * boxLength,
                     (int) (boxLength * 0.8),
                     (int) (boxLength * 0.8)
             );
+            if (robot.getDirection() == Direction.SOUTH) {
+                fill(255, 0, 0);
+                text(
+                        modeText,
+                        leftMargin - boxLength / 2 + robot.getX() * boxLength - textX,
+                        upperMargin - boxLength / 2 + robot.getY() * boxLength + textY + 5
+                );
+            } else if (robot.getDirection() == Direction.EAST) {
+                fill(255, 0, 0);
+                text(
+                        modeText,
+                        leftMargin - boxLength / 2 + robot.getX() * boxLength - textX + 5,
+                        upperMargin - boxLength / 2 + robot.getY() * boxLength + textY
+                );
+            } else if (robot.getDirection() == Direction.NORTH) {
+                fill(255, 0, 0);
+                text(
+                        modeText,
+                        leftMargin - boxLength / 2 + robot.getX() * boxLength - textX,
+                        upperMargin - boxLength / 2 + robot.getY() * boxLength + textY - 5
+                );
+            } else if (robot.getDirection() == Direction.WEST) {
+                fill(255, 0, 0);
+                text(
+                        modeText,
+                        leftMargin - boxLength / 2 + robot.getX() * boxLength - textX - 5,
+                        upperMargin - boxLength / 2 + robot.getY() * boxLength + textY
+                );
+            }
         }
     }
 
@@ -99,21 +137,44 @@ public class Main extends PApplet {
     public void keyPressed() {
         println("pressed " + key + " " + keyCode);
 
+        if(key == 'm' || key == 'M'){
+            if (count % 2 == 0){
+                mode = Mode.Teleport;
+                modeText = 'T';
+            } else {
+                mode = Mode.Restrict;
+                modeText = 'R';
+            }
+            count++;
+        }
         if (key == 'f' || key == 'F') {
             deleteAll();
             robot.stepForward();
-            if(robot.getX() > 10){
-                robot.setX(1);
-            } else if(robot.getY() > 10){
-                robot.setY(1);
-            } else if(robot.getX() < 1){
-                robot.setX(10);
-            } else if(robot.getY() < 1){
-                robot.setY(10);
+            if (mode == Mode.Teleport) {
+                if (robot.getX() > 10) {
+                    robot.setX(1);
+                } else if (robot.getY() > 10) {
+                    robot.setY(1);
+                } else if (robot.getX() < 1) {
+                    robot.setX(10);
+                } else if (robot.getY() < 1) {
+                    robot.setY(10);
+                }
+            } else if (mode == Mode.Restrict){
+                if (robot.getX() > 10) {
+                    robot.setX(10);
+                } else if (robot.getY() > 10) {
+                    robot.setY(10);
+                } else if (robot.getX() < 1) {
+                    robot.setX(1);
+                } else if (robot.getY() < 1) {
+                    robot.setY(1);
+                }
             }
         } else if (key == 'l' || key == 'L') {
             robot.rotateLeft();
         }
+
 
     }
 
